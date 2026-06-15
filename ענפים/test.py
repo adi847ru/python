@@ -42,6 +42,32 @@ if uploaded_file is not None:
             total_minutes = df['duration_ms'].sum() // (1000 * 60)
             st.metric("מוזיקה בדקות", total_minutes)
 
+    # הוספת פילטרים נוספים
+    st.sidebar.header("פילטרים נוספים")
+
+    # פילטר לטווח פופולריות
+    if 'popularity' in df.columns:
+        pop_min = int(df['popularity'].min())
+        pop_max = int(df['popularity'].max())
+        selected_popularity = st.sidebar.slider("טווח פופולריות", pop_min, pop_max, (pop_min, pop_max))
+        df = df[(df['popularity'] >= selected_popularity[0]) & (df['popularity'] <= selected_popularity[1])]
+
+    # פילטר לאומן
+    if 'artist' in df.columns:
+        unique_artists = df['artist'].unique().tolist()
+        selected_artists = st.sidebar.multiselect("בחר אומנים", unique_artists, default=unique_artists)
+        df = df[df['artist'].isin(selected_artists)]
+
+    # פילטר לזמן השיר (דקות)
+    if 'duration_ms' in df.columns:
+        duration_min = int(df['duration_ms'].min() // 1000 // 60)
+        duration_max = int(df['duration_ms'].max() // 1000 // 60) + 1
+        selected_duration = st.sidebar.slider("אורך שיר (בדקות)", duration_min, duration_max, (duration_min, duration_max))
+        df = df[
+            ((df['duration_ms'] // 1000 // 60) >= selected_duration[0]) &
+            ((df['duration_ms'] // 1000 // 60) <= selected_duration[1])
+        ]
+    
     # גרף פופולריות לפי שנה
     if "popularity" in df.columns and "year" in df.columns:
         st.subheader("פופולריות ממוצעת לפי שנה")
