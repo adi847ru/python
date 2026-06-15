@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
+print("hii")
+
 st.set_page_config(page_title="Spotify Data Dashboard", layout="wide")
 
 st.title("🎵 דשבורד ניתוח נתוני ספוטיפיי")
